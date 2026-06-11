@@ -3,6 +3,7 @@ import {
   getLangFromUrl,
   useTranslations,
   localizePath,
+  otherLang,
   entryLang,
   entrySlug,
 } from '../src/i18n/utils';
@@ -36,6 +37,13 @@ describe('localizePath', () => {
   });
   it('handles root for tr', () => {
     expect(localizePath('tr', '/')).toBe('/tr/');
+  });
+});
+
+describe('otherLang', () => {
+  it('returns the opposite language', () => {
+    expect(otherLang('en')).toBe('tr');
+    expect(otherLang('tr')).toBe('en');
   });
 });
 
