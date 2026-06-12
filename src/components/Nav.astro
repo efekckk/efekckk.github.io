@@ -9,9 +9,9 @@ const t = useTranslations(lang);
 <header class="nav">
   <a class="logo mono" href={localizePath(lang, '/')}>~/efecan</a>
   <nav>
-    <a href={localizePath(lang, '/projects')}>{t('nav.projects')}</a>
-    <a href={localizePath(lang, '/about')}>{t('nav.about')}</a>
-    <a href={localizePath(lang, '/blog')}>{t('nav.blog')}</a>
+    <a href={localizePath(lang, '/projects')}><span class="nav-num">01</span>{t('nav.projects')}</a>
+    <a href={localizePath(lang, '/about')}><span class="nav-num">02</span>{t('nav.about')}</a>
+    <a href={localizePath(lang, '/blog')}><span class="nav-num">03</span>{t('nav.blog')}</a>
     <a class="lang-switch mono" href={altPath}>{otherLang(lang).toUpperCase()}</a>
   </nav>
 </header>

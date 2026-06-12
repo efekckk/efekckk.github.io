@@ -21,6 +21,46 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
   year: 'numeric',
   month: 'short',
 });
+
+const status: Record<Lang, string> = {
+  en: 'OPEN TO WORK',
+  tr: 'YENİ FIRSATLARA AÇIK',
+};
+
+const analyze: Record<Lang, { info: string; scan: string; alert: string; ok: string }> = {
+  en: {
+    info: 'loading 3 branches... OK',
+    scan: 'running modified z-score (MAD) on subject...',
+    alert: 'anomaly detected: 3 careers in 1 person (z = 4.2)',
+    ok: 'false_positive: false — confirmed by production data',
+  },
+  tr: {
+    info: '3 branch yükleniyor... OK',
+    scan: 'denek üzerinde modified z-score (MAD) çalışıyor...',
+    alert: 'anomali tespit edildi: tek kişide 3 kariyer (z = 4.2)',
+    ok: 'false_positive: false — üretim verisiyle doğrulandı',
+  },
+};
+
+const demo: Record<Lang, { hint: string; count: string }> = {
+  en: {
+    hint: 'your pointer movement is a live metric — my MAD-based engine flags the spikes',
+    count: 'anomalies caught',
+  },
+  tr: {
+    hint: 'fare/parmak hareketin canlı bir metrik — MAD tabanlı motorum sapmaları yakalar',
+    count: 'yakalanan anomali',
+  },
+};
+
+const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
+  { label: { en: 'SQL · Python', tr: 'SQL · Python' }, v: 92 },
+  { label: { en: 'Power BI · Looker', tr: 'Power BI · Looker' }, v: 88 },
+  { label: { en: 'RAG · MCP · n8n', tr: 'RAG · MCP · n8n' }, v: 85 },
+  { label: { en: 'Airflow · ETL', tr: 'Airflow · ETL' }, v: 82 },
+  { label: { en: 'Kotlin · SwiftUI', tr: 'Kotlin · SwiftUI' }, v: 78 },
+  { label: { en: 'Escaping Excel', tr: "Excel'den kaçış" }, v: 97, joke: true },
+];
 ---
 <BaseLayout
   lang={lang}
@@ -29,9 +69,13 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
   altPath={localizePath(otherLang(lang), '/')}
 >
   <header class="hero-head">
-    <h1 class="hero-name">EFECAN KÜÇÜK</h1>
-    <p class="hero-tag">{t('hero.tag')}</p>
+    <div>
+      <h1 class="hero-name">EFECAN KÜÇÜK</h1>
+      <p class="hero-tag">{t('hero.tag')}</p>
+    </div>
+    <p class="status-badge"><span class="status-dot"></span>{status[lang]}</p>
   </header>
+
   <section class="terminal">
     <div class="prompt">efecan@istanbul ~ $ git branch -a</div>
     {branchKeys.map((key) => (
@@ -42,10 +86,13 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
         <span class="branch-comment">{branches[key].comment[lang]}</span>
       </a>
     ))}
-    <div class="prompt">
-      efecan@istanbul ~ $ {t('hero.checkout')}
-      <span class="branch-comment">&lt;{t('hero.pick')}&gt;</span>
-      <span class="cursor">▊</span>
+    <div class="analyze-seq">
+      <div class="prompt" data-line>efecan@istanbul ~ $ <span class="cmd-text">python analyze.py --target=efecan</span></div>
+      <div class="out out-info" data-line>[ INFO ]&nbsp; {analyze[lang].info}</div>
+      <div class="out out-info" data-line>[ SCAN ]&nbsp; {analyze[lang].scan}</div>
+      <div class="out out-alert" data-line>[ALERT ]&nbsp; {analyze[lang].alert}</div>
+      <div class="out out-ok" data-line>[ &nbsp;OK&nbsp; ]&nbsp; {analyze[lang].ok}</div>
+      <div class="prompt" data-line>efecan@istanbul ~ $ <span class="cursor">▊</span></div>
     </div>
   </section>
 
@@ -53,6 +100,17 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
     <a class="btn btn-primary" href={localizePath(lang, '/projects')}>{t('btn.projects')}</a>
     <a class="btn" href="/cv.pdf" download>{t('btn.cv')}</a>
   </div>
+
+  <section class="anomaly-demo">
+    <h2 class="cmd">$ ./anomaly-engine --live --input=pointer</h2>
+    <div class="demo-panel">
+      <canvas id="anomaly-canvas" width="600" height="120"></canvas>
+      <div class="demo-meta">
+        <span class="demo-hint">{demo[lang].hint}</span>
+        <span class="demo-count">{demo[lang].count}: <b id="anomaly-count">0</b></span>
+      </div>
+    </div>
+  </section>
 
   {branchKeys.map((key) => {
     const list = projects.filter((p) => p.data.branch === key);
@@ -67,6 +125,19 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
       </section>
     );
   })}
+
+  <section>
+    <h2 class="cmd">$ cat skills.txt --bars</h2>
+    <div class="skills">
+      {skills.map((s) => (
+        <div class="skill-row" data-joke={s.joke ? 'true' : undefined}>
+          <span class="skill-name">{s.label[lang]}</span>
+          <span class="skill-bar"><i style={`--w:${s.v}%`}></i></span>
+          <span class="skill-val">{s.v}%</span>
+        </div>
+      ))}
+    </div>
+  </section>
 
   <section>
     <h2 class="cmd">{t('home.cmd.about')}</h2>
@@ -94,3 +165,122 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
     <p><a href={localizePath(lang, '/blog')}>{t('home.blog.link')}</a></p>
   </section>
 </BaseLayout>
+
+<script>
+  // ── self-typing analyze sequence ─────────────────────────
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const seq = document.querySelector('.analyze-seq');
+
+  if (seq && !reduced) {
+    const lines = [...seq.querySelectorAll<HTMLElement>('[data-line]')];
+    const cmdText = seq.querySelector<HTMLElement>('.cmd-text');
+    const fullCmd = cmdText?.textContent ?? '';
+    lines.forEach((l) => (l.style.display = 'none'));
+    if (cmdText) cmdText.textContent = '';
+
+    const showLine = (i: number) => {
+      if (i >= lines.length) return;
+      lines[i].style.display = '';
+      setTimeout(() => showLine(i + 1), i === 0 ? 0 : 260);
+    };
+
+    setTimeout(() => {
+      lines[0].style.display = '';
+      let c = 0;
+      const typeChar = () => {
+        if (!cmdText) return;
+        if (c < fullCmd.length) {
+          cmdText.textContent = fullCmd.slice(0, ++c);
+          setTimeout(typeChar, 28);
+        } else {
+          setTimeout(() => showLine(1), 350);
+        }
+      };
+      typeChar();
+    }, 900);
+  }
+
+  // ── live anomaly engine (Modified Z-Score over MAD) ──────
+  const canvas = document.getElementById('anomaly-canvas') as HTMLCanvasElement | null;
+  const countEl = document.getElementById('anomaly-count');
+
+  if (canvas && countEl) {
+    const ctx = canvas.getContext('2d')!;
+    const css = getComputedStyle(document.documentElement);
+    const GREEN = css.getPropertyValue('--phosphor').trim() || '#39d353';
+    const ORANGE = css.getPropertyValue('--ai').trim() || '#ffa657';
+    const GRID = 'rgba(230,237,243,0.06)';
+
+    const WINDOW = 40;
+    const THRESHOLD = 3.5;
+    const samples: { v: number; anomaly: boolean }[] = [];
+    let speed = 0;
+    let lastX: number | null = null;
+    let lastY: number | null = null;
+    let anomalies = 0;
+
+    const onMove = (x: number, y: number) => {
+      if (lastX !== null && lastY !== null) {
+        speed += Math.hypot(x - lastX, y - lastY);
+      }
+      lastX = x;
+      lastY = y;
+    };
+    addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY), { passive: true });
+    addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+
+    const median = (a: number[]) => {
+      const s = [...a].sort((x, y) => x - y);
+      const m = s.length >> 1;
+      return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+    };
+
+    const tick = () => {
+      // idle noise keeps the chart alive; pointer speed rides on top
+      let v = speed + Math.random() * 6;
+      if (reduced === false && Math.random() < 0.015) v += 80 + Math.random() * 60; // rare cosmic ray
+      speed = 0;
+
+      let anomaly = false;
+      const recent = samples.slice(-WINDOW).map((s) => s.v);
+      if (recent.length >= 10) {
+        const med = median(recent);
+        const mad = median(recent.map((x) => Math.abs(x - med)));
+        if (mad > 0) {
+          const z = (0.6745 * (v - med)) / mad;
+          anomaly = Math.abs(z) > THRESHOLD;
+        }
+      }
+      if (anomaly) countEl.textContent = String(++anomalies);
+      samples.push({ v, anomaly });
+      if (samples.length > 60) samples.shift();
+      draw();
+    };
+
+    const draw = () => {
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = GRID;
+      for (let gy = H - 1; gy > 0; gy -= 24) ctx.fillRect(0, gy, W, 1);
+
+      const max = Math.max(40, ...samples.map((s) => s.v));
+      const bw = 6;
+      const gap = 4;
+      samples.forEach((s, i) => {
+        const h = Math.max(4, Math.round((s.v / max) * (H - 20) / 4) * 4);
+        const x = W - (samples.length - i) * (bw + gap);
+        if (x < 0) return;
+        ctx.fillStyle = s.anomaly ? ORANGE : GREEN;
+        ctx.globalAlpha = s.anomaly ? 1 : 0.75;
+        ctx.fillRect(x, H - h, bw, h);
+        if (s.anomaly) {
+          ctx.fillRect(x + 1, H - h - 8, 4, 4);
+        }
+      });
+      ctx.globalAlpha = 1;
+    };
+
+    setInterval(tick, 140);
+  }
+</script>

@@ -89,8 +89,40 @@ a:focus-visible, .btn:focus-visible {
 }
 .nav .lang-switch:hover { border-color: var(--accent); transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--shadow); }
 
+/* ── nav numbers ─────────────────────────────────────────── */
+.nav-num {
+  font-family: var(--px);
+  font-size: 7px;
+  color: var(--faint);
+  margin-right: 5px;
+  vertical-align: 4px;
+}
+.nav nav a:hover .nav-num { color: var(--phosphor); }
+
+/* ── status badge ────────────────────────────────────────── */
+.status-badge {
+  font-family: var(--px); font-size: 8px; letter-spacing: 1px;
+  color: var(--mobile);
+  border: 2px solid var(--border);
+  padding: 8px 10px 7px;
+  margin: 0;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 3px 3px 0 var(--shadow);
+  white-space: nowrap;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--phosphor);
+  box-shadow: 0 0 8px var(--phosphor);
+  animation: blink 1.4s step-end infinite;
+}
+
 /* ── hero heading ────────────────────────────────────────── */
-.hero-head { margin-top: 48px; }
+.hero-head {
+  margin-top: 48px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; flex-wrap: wrap;
+}
 .hero-name {
   font-family: var(--px);
   font-size: clamp(17px, 4.2vw, 30px);
@@ -161,17 +193,83 @@ a:focus-visible, .btn:focus-visible {
 .terminal .branch-comment { color: var(--faint); font-size: 16px; }
 
 /* staggered boot-in */
-.terminal > .prompt:first-of-type { animation: px-in 0.25s steps(3) backwards; }
+.terminal > .prompt { animation: px-in 0.25s steps(3) backwards; }
 .branch-line:nth-of-type(1) { animation: px-in 0.25s steps(3) 0.12s backwards; }
 .branch-line:nth-of-type(2) { animation: px-in 0.25s steps(3) 0.22s backwards; }
 .branch-line:nth-of-type(3) { animation: px-in 0.25s steps(3) 0.32s backwards; }
-.terminal > .prompt:last-of-type { animation: px-in 0.25s steps(3) 0.45s backwards; }
 @keyframes px-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 
+/* ── analyze sequence (typed by JS) ──────────────────────── */
+.analyze-seq { margin-top: 14px; }
+.analyze-seq .out { padding-left: 2px; }
+.out-info { color: var(--muted); }
+.out-alert { color: var(--ai); text-shadow: 0 0 8px rgba(255, 166, 87, 0.4); }
+.out-ok { color: var(--phosphor); }
+.analyze-seq .cmd-text { color: var(--text); }
+
 .hero-actions { display: flex; gap: 14px; margin: 26px 0 8px; flex-wrap: wrap; }
+
+/* ── live anomaly demo ───────────────────────────────────── */
+.demo-panel {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  box-shadow: 4px 4px 0 var(--shadow);
+  padding: 14px;
+}
+.demo-panel canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+.demo-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  background:
+    repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 12px)
+    top left / 100% 2px no-repeat;
+}
+.demo-hint { font-family: var(--crt); font-size: 17px; color: var(--faint); }
+.demo-count { font-family: var(--px); font-size: 8px; color: var(--muted); letter-spacing: 1px; }
+.demo-count b { color: var(--ai); font-weight: 400; }
+
+/* ── skill bars ──────────────────────────────────────────── */
+.skills { max-width: 620px; }
+.skill-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 48px;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 0;
+}
+.skill-name { font-family: var(--crt); font-size: 18px; color: var(--text); }
+.skill-bar {
+  height: 12px;
+  border: 1px solid var(--border);
+  padding: 2px;
+  background: var(--surface);
+}
+.skill-bar i {
+  display: block; height: 100%;
+  width: var(--w);
+  background: repeating-linear-gradient(90deg, var(--phosphor) 0 6px, transparent 6px 8px);
+  animation: bar-grow 0.9s steps(14) backwards;
+}
+.skill-val { font-family: var(--crt); font-size: 17px; color: var(--faint); text-align: right; }
+.skill-row[data-joke] .skill-bar i {
+  background: repeating-linear-gradient(90deg, var(--ai) 0 6px, transparent 6px 8px);
+}
+.skill-row[data-joke] .skill-name { color: var(--ai); }
+@keyframes bar-grow { from { width: 0; } }
+@media (max-width: 560px) {
+  .skill-row { grid-template-columns: 1fr; gap: 4px; }
+  .skill-val { text-align: left; }
+}
 
 /* ── blocky buttons ──────────────────────────────────────── */
 .btn {
@@ -294,6 +392,7 @@ a:focus-visible, .btn:focus-visible {
 /* ── motion safety ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .cursor, .terminal::after,
-  .terminal > .prompt, .branch-line { animation: none; }
+  .terminal > .prompt, .branch-line,
+  .status-dot, .skill-bar i { animation: none; }
   .btn, .card, .nav .lang-switch { transition: none; }
 }
