@@ -10,10 +10,10 @@ import {
 
 describe('getLangFromUrl', () => {
   it('returns tr for /tr/ paths', () => {
-    expect(getLangFromUrl(new URL('https://efekck.github.io/tr/projects'))).toBe('tr');
+    expect(getLangFromUrl(new URL('https://efekckk.github.io/tr/projects'))).toBe('tr');
   });
   it('returns en for root paths', () => {
-    expect(getLangFromUrl(new URL('https://efekck.github.io/projects'))).toBe('en');
+    expect(getLangFromUrl(new URL('https://efekckk.github.io/projects'))).toBe('en');
   });
 });
 

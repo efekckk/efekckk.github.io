@@ -1,6 +1,6 @@
-# efekck.github.io
+# efekckk.github.io
 
-Kişisel portfolyo sitesi — [efekck.github.io](https://efekck.github.io). Astro ile
+Kişisel portfolyo sitesi — [efekckk.github.io](https://efekckk.github.io). Astro ile
 statik, iki dilli (EN kök + TR `/tr/`), GitHub Actions ile otomatik deploy.
 
 ## Geliştirme
