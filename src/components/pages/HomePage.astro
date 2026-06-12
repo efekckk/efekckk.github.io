@@ -104,7 +104,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   <section class="anomaly-demo">
     <h2 class="cmd">$ ./anomaly-engine --live --input=pointer</h2>
     <div class="demo-panel">
-      <canvas id="anomaly-canvas" width="600" height="120"></canvas>
+      <canvas id="anomaly-canvas" width="600" height="140"></canvas>
       <div class="demo-meta">
         <span class="demo-hint">{demo[lang].hint}</span>
         <span class="demo-count">{demo[lang].count}: <b id="anomaly-count">0</b></span>
@@ -206,11 +206,34 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
 
   if (canvas && countEl) {
     const ctx = canvas.getContext('2d')!;
-    const css = getComputedStyle(document.documentElement);
-    const GREEN = css.getPropertyValue('--phosphor').trim() || '#39d353';
-    const ORANGE = css.getPropertyValue('--ai').trim() || '#ffa657';
-    const GRID = 'rgba(230,237,243,0.06)';
+    const GREEN = { hi: '#aff5b4', mid: '#39d353', lo: '#1a7f37', rim: '#56d364' };
+    const ORANGE = { hi: '#ffd8b5', mid: '#ffa657', lo: '#9a5518', rim: '#ffc680' };
+    type Palette = typeof GREEN;
 
+    const SPRITES = {
+      invader: ['..#..#..', '...##...', '..####..', '.##..##.', '########', '#.####.#', '#.#..#.#', '.#....#.'],
+      blob: ['..####..', '.######.', '#o####o#', '########', '.######.', '..#..#..'],
+    };
+
+    const drawSprite = (map: string[], x: number, y: number, s: number, color: string, eye: string) => {
+      map.forEach((row, ry) => {
+        [...row].forEach((c, rx) => {
+          if (c === '.') return;
+          ctx.fillStyle = c === 'o' ? eye : color;
+          ctx.fillRect(x + rx * s, y + ry * s, s, s);
+        });
+      });
+    };
+
+    let starSeed = 42;
+    const srand = () => (starSeed = (starSeed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    const stars = Array.from({ length: 26 }, () => ({
+      x: Math.floor(srand() * 600),
+      y: Math.floor(srand() * 80),
+      blink: srand() < 0.35,
+    }));
+
+    let tickCount = 0;
     const WINDOW = 40;
     const THRESHOLD = 3.5;
     const samples: { v: number; anomaly: boolean }[] = [];
@@ -254,31 +277,59 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
       if (anomaly) countEl.textContent = String(++anomalies);
       samples.push({ v, anomaly });
       if (samples.length > 60) samples.shift();
+      tickCount++;
       draw();
+    };
+
+    const drawColumn = (x: number, top: number, h: number, bw: number, pal: Palette) => {
+      ctx.fillStyle = pal.mid;
+      ctx.fillRect(x, top, bw, h);
+      ctx.fillStyle = pal.hi;
+      ctx.fillRect(x, top, 2, h);
+      ctx.fillStyle = pal.lo;
+      ctx.fillRect(x + bw - 2, top, 2, h);
+      ctx.fillStyle = pal.rim;
+      ctx.fillRect(x - 2, top, bw + 4, 4);
+      ctx.fillStyle = pal.hi;
+      ctx.fillRect(x - 2, top, bw + 4, 2);
     };
 
     const draw = () => {
       const W = canvas.width;
       const H = canvas.height;
+      const block = 4;
+      const bw = 8;
+      const gap = 6;
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = GRID;
-      for (let gy = H - 1; gy > 0; gy -= 24) ctx.fillRect(0, gy, W, 1);
+
+      stars.forEach((st, i) => {
+        if (st.blink && (tickCount + i) % 9 < 3) return;
+        ctx.fillStyle = '#2d333b';
+        ctx.fillRect(st.x, st.y, 2, 2);
+      });
+
+      for (let gx = 0; gx < W; gx += block) {
+        ctx.fillStyle = (gx / block) % 2 ? '#161b22' : '#21262d';
+        ctx.fillRect(gx, H - 6, block, 6);
+      }
 
       const max = Math.max(40, ...samples.map((s) => s.v));
-      const bw = 6;
-      const gap = 4;
-      samples.forEach((s, i) => {
-        const h = Math.max(4, Math.round((s.v / max) * (H - 20) / 4) * 4);
-        const x = W - (samples.length - i) * (bw + gap);
-        if (x < 0) return;
-        ctx.fillStyle = s.anomaly ? ORANGE : GREEN;
-        ctx.globalAlpha = s.anomaly ? 1 : 0.75;
-        ctx.fillRect(x, H - h, bw, h);
+      const visible = Math.floor((W - 16) / (bw + gap));
+      const shown = samples.slice(-visible);
+      shown.forEach((s, i) => {
+        const h = Math.max(block, Math.round(((s.v / max) * (H - 44)) / block) * block);
+        const x = W - (shown.length - i) * (bw + gap) - 8;
+        const top = H - 6 - h;
+        const pal = s.anomaly ? ORANGE : GREEN;
+        drawColumn(x, top, h, bw, pal);
         if (s.anomaly) {
-          ctx.fillRect(x + 1, H - h - 8, 4, 4);
+          drawSprite(SPRITES.invader, x - 4, top - 22, 2, ORANGE.mid, '#0a0d12');
+        }
+        if (i === shown.length - 1 && !s.anomaly) {
+          const bounce = tickCount % 4 < 2 ? 0 : 2;
+          drawSprite(SPRITES.blob, x - 4, top - 14 - bounce, 2, GREEN.mid, '#0a0d12');
         }
       });
-      ctx.globalAlpha = 1;
     };
 
     setInterval(tick, 140);
