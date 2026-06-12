@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const posts = (await getCollection('blog', (e) => e.id.startsWith(`${lang}/`)))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+<BaseLayout
+  lang={lang}
+  title={t('meta.blog.title')}
+  description={t('meta.blog.desc')}
+  altPath={localizePath(otherLang(lang), '/blog')}
+>
+  <h1 class="cmd" style="margin-top: 40px;">{t('blog.cmd')}</h1>
+  {posts.map((post) => (
+    <a
+      class="post-row"
+      data-branch={post.data.branch}
+      href={localizePath(lang, `/blog/${entrySlug(post.id)}`)}
+    >
+      <span>
+        <span class="post-tag">[{post.data.branch}]</span>
+        {post.data.title}
+      </span>
+      <span class="post-date mono">{dateFmt.format(post.data.date)}</span>
+    </a>
+  ))}
+</BaseLayout>

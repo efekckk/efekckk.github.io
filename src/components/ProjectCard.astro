@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { entrySlug, localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props { project: CollectionEntry<'projects'>; lang: Lang; }
+const { project, lang } = Astro.props;
+const { title, summary, stack, branch } = project.data;
+const href = localizePath(lang, `/projects/${entrySlug(project.id)}`);
+---
+<a class="card" data-branch={branch} href={href}>
+  <h3 class="card-title">{title}</h3>
+  <p class="card-summary">{summary}</p>
+  <div class="card-stack mono">{stack.join(' · ')}</div>
+</a>

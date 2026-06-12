@@ -1,0 +1,18 @@
+---
+import { useTranslations } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<footer class="footer">
+  <span class="footer-cmd">{t('footer.cmd')}</span>
+  <span>
+    <a href="mailto:efe.kckk@gmail.com">efe.kckk@gmail.com</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/efecankucuk/">LinkedIn</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/efekck">GitHub</a>
+  </span>
+</footer>

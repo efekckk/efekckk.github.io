@@ -1,0 +1,30 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang; project: CollectionEntry<'projects'>; }
+const { lang, project } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(project);
+const slug = entrySlug(project.id);
+---
+<BaseLayout
+  lang={lang}
+  title={`${project.data.title} — Efecan Küçük`}
+  description={project.data.summary}
+  altPath={localizePath(otherLang(lang), `/projects/${slug}`)}
+>
+  <article class="detail" data-branch={project.data.branch}>
+    <p style="margin-top: 32px;">
+      <a class="mono" href={localizePath(lang, '/projects')}>{t('detail.back')}</a>
+    </p>
+    <h1>{project.data.title}</h1>
+    <div class="stack mono">{project.data.stack.join(' · ')}</div>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

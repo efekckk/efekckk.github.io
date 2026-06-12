@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { branches, branchKeys } from '../../data/branches';
+import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const projects = (await getCollection('projects', (e) => e.id.startsWith(`${lang}/`)))
+  .sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('blog', (e) => e.id.startsWith(`${lang}/`)))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
+  year: 'numeric',
+  month: 'short',
+});
+---
+<BaseLayout
+  lang={lang}
+  title={t('meta.home.title')}
+  description={t('meta.home.desc')}
+  altPath={localizePath(otherLang(lang), '/')}
+>
+  <h1 class="sr-only">{t('meta.home.title')}</h1>
+  <section class="terminal mono">
+    <div class="prompt">efecan@istanbul ~ $ git branch -a</div>
+    {branchKeys.map((key) => (
+      <a class="branch-line" data-branch={key} href={`#${branches[key].anchor}`}>
+        <span class="star">{key === 'data' ? '*' : ' '}</span>
+        <span class="branch-name">{branches[key].name}</span>
+        <span class="branch-comment">{branches[key].comment[lang]}</span>
+      </a>
+    ))}
+    <div class="prompt">
+      efecan@istanbul ~ $ {t('hero.checkout')}
+      <span class="branch-comment">&lt;{t('hero.pick')}&gt;</span>
+      <span class="cursor">▊</span>
+    </div>
+  </section>
+
+  <div class="hero-actions">
+    <a class="btn btn-primary" href={localizePath(lang, '/projects')}>{t('btn.projects')}</a>
+    <a class="btn" href="/cv.pdf" download>{t('btn.cv')}</a>
+  </div>
+
+  {branchKeys.map((key) => {
+    const list = projects.filter((p) => p.data.branch === key);
+    return list.length > 0 && (
+      <section id={branches[key].anchor}>
+        <h2 class="cmd">$ ls projects/ --branch={branches[key].name}</h2>
+        <div class="grid">
+          {list.map((p) => <ProjectCard project={p} lang={lang} />)}
+        </div>
+      </section>
+    );
+  })}
+
+  <section>
+    <h2 class="cmd">{t('home.cmd.about')}</h2>
+    <p style="max-width: 620px; color: var(--muted); font-size: 15px;">
+      {t('home.about.text')}
+    </p>
+    <a href={localizePath(lang, '/about')}>{t('home.about.link')}</a>
+  </section>
+
+  <section>
+    <h2 class="cmd">{t('home.cmd.blog')}</h2>
+    {posts.map((post) => (
+      <a
+        class="post-row"
+        data-branch={post.data.branch}
+        href={localizePath(lang, `/blog/${entrySlug(post.id)}`)}
+      >
+        <span>
+          <span class="post-tag">[{post.data.branch}]</span>
+          {post.data.title}
+        </span>
+        <span class="post-date mono">{dateFmt.format(post.data.date)}</span>
+      </a>
+    ))}
+    <p><a href={localizePath(lang, '/blog')}>{t('home.blog.link')}</a></p>
+  </section>
+</BaseLayout>
