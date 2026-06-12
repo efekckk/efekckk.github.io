@@ -29,6 +29,9 @@ const slug = entrySlug(project.id);
         {project.data.pkg && <a href={project.data.pkg}>pypi ↗</a>}
       </p>
     )}
+    {project.data.image && (
+      <img class="detail-image" src={project.data.image} alt={project.data.title} />
+    )}
     <div class="prose">
       <Content />
     </div>

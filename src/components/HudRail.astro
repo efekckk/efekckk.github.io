@@ -1,0 +1,43 @@
+---
+import PixelAvatar from './PixelAvatar.astro';
+import { useTranslations } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  status: string;
+  projectCount: number;
+  postCount: number;
+}
+const { lang, status, projectCount, postCount } = Astro.props;
+const t = useTranslations(lang);
+
+const anchors = [
+  { num: '01', href: '#branches', label: t('rail.branches') },
+  { num: '02', href: '#live', label: t('rail.live') },
+  { num: '03', href: '#data-analytics', label: t('rail.projects') },
+  { num: '04', href: '#skills', label: t('rail.skills') },
+  { num: '05', href: '#about', label: t('rail.about') },
+  { num: '06', href: '#posts', label: t('rail.posts') },
+];
+---
+<aside class="hud-rail">
+  <div class="rail-id">
+    <PixelAvatar size={5} />
+    <span class="rail-user mono">~/efecan</span>
+  </div>
+  <p class="status-badge"><span class="status-dot"></span>{status}</p>
+  <div class="rail-stats mono">
+    <span>branches: 3</span>
+    <span>projects: {projectCount}</span>
+    <span>posts: {postCount}</span>
+  </div>
+  <nav class="rail-anchors" aria-label="sections">
+    {anchors.map((a) => (
+      <a href={a.href} data-target={a.href.slice(1)}>
+        <span class="rail-num">{a.num}</span>
+        {a.label}
+      </a>
+    ))}
+  </nav>
+</aside>

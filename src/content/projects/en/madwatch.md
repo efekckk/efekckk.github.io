@@ -7,6 +7,7 @@ date: 2026-06-12
 order: 3
 repo: https://github.com/efekckk/madwatch
 pkg: https://pypi.org/project/madwatch/
+image: /projects/madwatch.png
 ---
 
 The statistical core of the anomaly detection engine, extracted into an open-source

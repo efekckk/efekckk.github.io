@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../ProjectCard.astro';
 import PixelIcon from '../PixelIcon.astro';
+import HudRail from '../HudRail.astro';
 import { branches, branchKeys } from '../../data/branches';
 import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
@@ -13,9 +14,9 @@ const t = useTranslations(lang);
 
 const projects = (await getCollection('projects', (e) => e.id.startsWith(`${lang}/`)))
   .sort((a, b) => a.data.order - b.data.order);
-const posts = (await getCollection('blog', (e) => e.id.startsWith(`${lang}/`)))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
+const allPosts = (await getCollection('blog', (e) => e.id.startsWith(`${lang}/`)))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const posts = allPosts.slice(0, 3);
 
 const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
   year: 'numeric',
@@ -68,15 +69,17 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   description={t('meta.home.desc')}
   altPath={localizePath(otherLang(lang), '/')}
 >
+  <div class="console-grid">
+  <HudRail lang={lang} status={status[lang]} projectCount={projects.length} postCount={allPosts.length} />
+  <div class="console-main">
   <header class="hero-head">
     <div>
       <h1 class="hero-name">EFECAN KÜÇÜK</h1>
       <p class="hero-tag">{t('hero.tag')}</p>
     </div>
-    <p class="status-badge"><span class="status-dot"></span>{status[lang]}</p>
   </header>
 
-  <section class="terminal">
+  <section class="terminal" id="branches">
     <div class="prompt">efecan@istanbul ~ $ git branch -a</div>
     {branchKeys.map((key) => (
       <a class="branch-line" data-branch={key} href={`#${branches[key].anchor}`}>
@@ -101,7 +104,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     <a class="btn" href="/cv.pdf" download>{t('btn.cv')}</a>
   </div>
 
-  <section class="anomaly-demo">
+  <section class="anomaly-demo" id="live">
     <h2 class="cmd">$ ./anomaly-engine --live --input=pointer</h2>
     <div class="demo-panel">
       <canvas id="anomaly-canvas" width="600" height="140"></canvas>
@@ -126,7 +129,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     );
   })}
 
-  <section>
+  <section id="skills">
     <h2 class="cmd">$ cat skills.txt --bars</h2>
     <div class="skills">
       {skills.map((s) => (
@@ -139,7 +142,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     </div>
   </section>
 
-  <section>
+  <section id="about">
     <h2 class="cmd">{t('home.cmd.about')}</h2>
     <p style="max-width: 620px; color: var(--muted); font-size: 15px;">
       {t('home.about.text')}
@@ -147,7 +150,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     <a href={localizePath(lang, '/about')}>{t('home.about.link')}</a>
   </section>
 
-  <section>
+  <section id="posts">
     <h2 class="cmd">{t('home.cmd.blog')}</h2>
     {posts.map((post) => (
       <a
@@ -164,6 +167,8 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     ))}
     <p><a href={localizePath(lang, '/blog')}>{t('home.blog.link')}</a></p>
   </section>
+  </div>
+  </div>
 </BaseLayout>
 
 <script>

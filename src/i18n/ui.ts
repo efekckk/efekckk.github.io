@@ -31,6 +31,12 @@ export const ui = {
     'hero.checkout': 'git checkout',
     'hero.pick': 'pick a branch above',
     'hero.tag': '3 branches · 0 merge conflicts',
+    'rail.branches': 'BRANCHES',
+    'rail.live': 'LIVE FEED',
+    'rail.projects': 'PROJECTS',
+    'rail.skills': 'SKILLS',
+    'rail.about': 'ABOUT',
+    'rail.posts': 'POSTS',
   },
   tr: {
     'nav.projects': 'Projeler',
@@ -60,6 +66,12 @@ export const ui = {
     'hero.checkout': 'git checkout',
     'hero.pick': 'yukarıdan bir branch seç',
     'hero.tag': '3 branch · 0 merge conflict',
+    'rail.branches': "BRANCH'LER",
+    'rail.live': 'CANLI AKIŞ',
+    'rail.projects': 'PROJELER',
+    'rail.skills': 'YETENEKLER',
+    'rail.about': 'HAKKIMDA',
+    'rail.posts': 'YAZILAR',
   },
 } as const;
 

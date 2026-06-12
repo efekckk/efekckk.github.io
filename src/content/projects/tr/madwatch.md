@@ -7,6 +7,7 @@ date: 2026-06-12
 order: 3
 repo: https://github.com/efekckk/madwatch
 pkg: https://pypi.org/project/madwatch/
+image: /projects/madwatch.png
 ---
 
 Anomali tespit motorunun istatistiksel çekirdeği, açık kaynak bir Python paketine
