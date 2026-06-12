@@ -5,30 +5,35 @@ interface Props {
 const { size = 5 } = Astro.props;
 
 const PALETTE: Record<string, string> = {
-  h: '#262d36',
-  s: '#e8b88a',
-  g: '#58c6ff',
+  h: '#332821',
+  s: '#e0b48c',
+  n: '#c89a72',
   d: '#0a0d12',
-  t: '#39d353',
+  b: '#4a3a2a',
+  k: '#232a34',
+  p: '#7a4f33',
+  q: '#a4744a',
 };
 
 const MAP = [
-  '................',
-  '....hhhhhhhh....',
-  '...hhhhhhhhhh...',
-  '..hhhhhhhhhhhh..',
-  '..hhsssssssshh..',
-  '..hssssssssssh..',
-  '.hsggggssggggsh.',
-  '.hsgddgssgddgsh.',
-  '..hssssssssssh..',
-  '..ssssssssssss..',
-  '...ssssddssss...',
-  '....ssssssss....',
-  '......ssss......',
-  '....tttttttt....',
-  '..tttttttttttt..',
-  '.tttttttttttttt.',
+  '..................',
+  '.....hhhhhhhh.....',
+  '....hhhhhhhhhh....',
+  '...hhhhhhhhhhhh...',
+  '....hhsssssshh....',
+  '....hssssssssh....',
+  '....hshhsshhsh....',
+  '....hssdssdssh....',
+  '....hssssssssh....',
+  '....hbssnnssbh....',
+  '....hbssssssbh....',
+  '....hbbsddsbbh....',
+  '.....bbbbbbbb.....',
+  '......bbbbbb......',
+  '.......ssss.......',
+  '...pqppkkkkppqp...',
+  '..ppqppkkkkppqpp..',
+  '.pqppqpkkkkpqppqp.',
 ];
 
 const shadows: string[] = [];
@@ -38,8 +43,9 @@ MAP.forEach((row, y) => {
     if (color) shadows.push(`${x * size}px ${y * size}px 0 0 ${color}`);
   });
 });
-const total = size * 16;
+const width = size * MAP[0].length;
+const height = size * MAP.length;
 ---
-<span class="pixel-avatar" aria-hidden="true" style={`width:${total}px;height:${total}px;`}>
+<span class="pixel-avatar" aria-hidden="true" style={`width:${width}px;height:${height}px;`}>
   <i style={`width:${size}px;height:${size}px;box-shadow:${shadows.join(',')};`}></i>
 </span>
