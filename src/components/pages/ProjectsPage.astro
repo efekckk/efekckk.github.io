@@ -22,7 +22,7 @@ const projects = (await getCollection('projects', (e) => e.id.startsWith(`${lang
   <h1 class="cmd" style="margin-top: 40px;">{t('projects.cmd')}</h1>
   {branchKeys.map((key) => {
     const list = projects.filter((p) => p.data.branch === key);
-    return (
+    return list.length > 0 && (
       <section>
         <h2 class="cmd">--branch={branches[key].name}</h2>
         <div class="grid">
