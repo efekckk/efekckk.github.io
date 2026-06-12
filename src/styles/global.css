@@ -1,7 +1,10 @@
 :root {
   --bg: #0a0d12;
   --surface: #11161d;
+  --surface-2: #0e1319;
   --border: #2d333b;
+  --frame: #38414d;
+  --cyan: #58c6ff;
   --text: #e6edf3;
   --muted: #8b949e;
   --faint: #6e7681;
@@ -27,11 +30,32 @@ body {
   margin: 0;
   line-height: 1.6;
   background:
-    radial-gradient(900px 480px at 75% -10%, rgba(88, 166, 255, 0.07), transparent 60%),
-    radial-gradient(700px 420px at -10% 30%, rgba(57, 211, 83, 0.04), transparent 55%),
-    repeating-linear-gradient(0deg, transparent 0 15px, rgba(230, 237, 243, 0.015) 15px 16px),
-    repeating-linear-gradient(90deg, transparent 0 15px, rgba(230, 237, 243, 0.015) 15px 16px),
+    radial-gradient(900px 480px at 75% -10%, rgba(88, 198, 255, 0.06), transparent 60%),
+    radial-gradient(700px 420px at -10% 30%, rgba(57, 211, 83, 0.045), transparent 55%),
+    radial-gradient(circle at center, rgba(230, 237, 243, 0.05) 1px, transparent 1px) 0 0 / 28px 28px,
     var(--bg);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background: linear-gradient(
+    180deg,
+    transparent 46%,
+    rgba(88, 198, 255, 0.02) 49%,
+    rgba(57, 211, 83, 0.035) 50%,
+    rgba(88, 198, 255, 0.02) 51%,
+    transparent 54%
+  );
+  background-size: 100% 220%;
+  animation: sweep 11s linear infinite;
+}
+@keyframes sweep {
+  from { background-position: 0 220%; }
+  to { background-position: 0 -120%; }
 }
 
 ::selection { background: var(--phosphor); color: #08110a; }
@@ -70,8 +94,8 @@ a:focus-visible, .btn:focus-visible {
   flex-wrap: wrap;
   max-width: 880px; margin: 0 auto; padding: 20px 24px 16px;
   background:
-    repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 12px)
-    bottom left / 100% 3px no-repeat;
+    linear-gradient(90deg, var(--phosphor), var(--cyan) 120px, transparent 120px) bottom left / 100% 2px no-repeat,
+    linear-gradient(var(--frame), var(--frame)) bottom left / 100% 1px no-repeat;
 }
 .nav .logo {
   font-family: var(--px); font-size: 11px; color: var(--prompt);
@@ -83,11 +107,12 @@ a:focus-visible, .btn:focus-visible {
 .nav nav a:hover { color: var(--text); text-decoration: none; text-shadow: 0 0 8px rgba(230, 237, 243, 0.4); }
 .nav .lang-switch {
   font-family: var(--px); font-size: 9px;
-  border: 2px solid var(--border);
-  padding: 5px 8px 4px; color: var(--accent);
-  box-shadow: 2px 2px 0 var(--shadow);
+  border: 1px solid var(--frame);
+  padding: 6px 9px 5px; color: var(--cyan);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.nav .lang-switch:hover { border-color: var(--accent); transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--shadow); }
+.nav .lang-switch:hover { border-color: var(--cyan); box-shadow: inset 0 0 10px rgba(88, 198, 255, 0.2); }
 
 /* ── nav numbers ─────────────────────────────────────────── */
 .nav-num {
@@ -103,11 +128,12 @@ a:focus-visible, .btn:focus-visible {
 .status-badge {
   font-family: var(--px); font-size: 8px; letter-spacing: 1px;
   color: var(--mobile);
-  border: 2px solid var(--border);
-  padding: 8px 10px 7px;
+  border: 1px solid rgba(126, 231, 135, 0.4);
+  padding: 9px 11px 8px;
   margin: 0;
   display: inline-flex; align-items: center; gap: 8px;
-  box-shadow: 3px 3px 0 var(--shadow);
+  box-shadow: 0 0 14px -6px var(--phosphor);
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
   white-space: nowrap;
 }
 .status-dot {
@@ -129,7 +155,9 @@ a:focus-visible, .btn:focus-visible {
   line-height: 1.5;
   margin: 0;
   letter-spacing: 1px;
-  text-shadow: 3px 3px 0 rgba(121, 192, 255, 0.22), 6px 6px 0 rgba(0, 0, 0, 0.5);
+  text-shadow:
+    2px 2px 0 rgba(88, 198, 255, 0.3),
+    0 0 22px rgba(88, 198, 255, 0.25);
 }
 .hero-tag {
   font-family: var(--crt); font-size: 21px; color: var(--muted);
@@ -140,10 +168,12 @@ a:focus-visible, .btn:focus-visible {
 /* ── CRT terminal panel ──────────────────────────────────── */
 .terminal {
   position: relative;
-  background: var(--surface);
-  border: 2px solid var(--border);
+  background: linear-gradient(180deg, #131922, var(--surface-2));
+  border: 1px solid var(--frame);
   border-radius: 0;
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #1c2128, 8px 8px 0 var(--shadow);
+  box-shadow:
+    0 0 22px -8px rgba(88, 198, 255, 0.35),
+    inset 0 1px 0 rgba(230, 237, 243, 0.06);
   padding: 46px 24px 22px;
   margin-top: 28px;
   font-family: var(--crt);
@@ -152,11 +182,12 @@ a:focus-visible, .btn:focus-visible {
   overflow-x: auto;
 }
 .terminal::before {
-  content: 'EFECAN.EXE ─ tty1';
+  content: 'EFECAN.EXE ── tty1 ▮ SYS:ONLINE';
   position: absolute; top: 0; left: 0; right: 0;
   height: 26px;
-  background: #1c2128;
-  border-bottom: 2px solid var(--border);
+  background: linear-gradient(90deg, #161d27, #10151c);
+  border-bottom: 1px solid var(--frame);
+  box-shadow: 0 1px 0 rgba(88, 198, 255, 0.15);
   font-family: var(--px); font-size: 8px; color: var(--faint);
   display: flex; align-items: center; padding: 0 12px;
   letter-spacing: 1px;
@@ -214,10 +245,20 @@ a:focus-visible, .btn:focus-visible {
 
 /* ── live anomaly demo ───────────────────────────────────── */
 .demo-panel {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  box-shadow: 4px 4px 0 var(--shadow);
-  padding: 14px;
+  position: relative;
+  background: linear-gradient(180deg, #131922, var(--surface-2));
+  border: 1px solid var(--frame);
+  box-shadow: 0 0 22px -10px rgba(57, 211, 83, 0.45);
+  padding: 22px 14px 14px;
+}
+.demo-panel::before {
+  content: 'MODULE: MAD-ENGINE v0.1.0 // LIVE FEED';
+  position: absolute; top: -1px; right: 14px;
+  background: var(--bg);
+  border: 1px solid var(--frame);
+  padding: 4px 8px 3px;
+  font-family: var(--px); font-size: 7px; letter-spacing: 1px;
+  color: var(--cyan);
 }
 .demo-panel canvas {
   display: block;
@@ -230,9 +271,7 @@ a:focus-visible, .btn:focus-visible {
   gap: 16px; flex-wrap: wrap;
   margin-top: 10px;
   padding-top: 10px;
-  background:
-    repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 12px)
-    top left / 100% 2px no-repeat;
+  background: linear-gradient(var(--frame), var(--frame)) top left / 100% 1px no-repeat;
 }
 .demo-hint { font-family: var(--crt); font-size: 17px; color: var(--faint); }
 .demo-count { font-family: var(--px); font-size: 8px; color: var(--muted); letter-spacing: 1px; }
@@ -249,15 +288,17 @@ a:focus-visible, .btn:focus-visible {
 }
 .skill-name { font-family: var(--crt); font-size: 18px; color: var(--text); }
 .skill-bar {
-  height: 12px;
-  border: 1px solid var(--border);
+  height: 14px;
+  border: 1px solid var(--frame);
   padding: 2px;
-  background: var(--surface);
+  background: var(--bg);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
 }
 .skill-bar i {
   display: block; height: 100%;
   width: var(--w);
-  background: repeating-linear-gradient(90deg, var(--phosphor) 0 6px, transparent 6px 8px);
+  background: repeating-linear-gradient(90deg, var(--phosphor) 0 9px, transparent 9px 12px);
+  box-shadow: 0 0 10px rgba(57, 211, 83, 0.4);
   animation: bar-grow 0.9s steps(14) backwards;
 }
 .skill-val { font-family: var(--crt); font-size: 17px; color: var(--faint); text-align: right; }
@@ -271,27 +312,34 @@ a:focus-visible, .btn:focus-visible {
   .skill-val { text-align: left; }
 }
 
-/* ── blocky buttons ──────────────────────────────────────── */
+/* ── tech buttons (cut corners) ──────────────────────────── */
 .btn {
   display: inline-block;
   font-family: var(--px); font-size: 10px; letter-spacing: 1px;
   text-transform: uppercase;
-  border: 2px solid var(--border); border-radius: 0;
-  padding: 12px 16px 10px;
+  border: 1px solid var(--frame); border-radius: 0;
+  padding: 13px 18px 11px;
   color: var(--text);
-  background: var(--surface);
-  box-shadow: 4px 4px 0 var(--shadow);
-  transition: transform 0.1s steps(2), box-shadow 0.1s steps(2);
+  background: linear-gradient(180deg, #151c26, var(--surface-2));
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 .btn:hover {
   text-decoration: none;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--shadow);
-  border-color: var(--muted);
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(88, 198, 255, 0.18);
+  transform: translateY(-1px);
 }
-.btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--shadow); }
-.btn-primary { background: var(--btn); border-color: #2ea043; color: #fff; }
-.btn-primary:hover { border-color: #3fb950; }
+.btn:active { transform: translateY(1px); }
+.btn-primary {
+  background: linear-gradient(180deg, #2ea043, #1f7a33);
+  border-color: #3fb950;
+  color: #fff;
+}
+.btn-primary:hover {
+  border-color: var(--phosphor);
+  box-shadow: inset 0 0 14px rgba(174, 255, 184, 0.25), 0 0 16px -6px var(--phosphor);
+}
 
 /* ── section headings as commands ────────────────────────── */
 .cmd {
@@ -301,8 +349,8 @@ a:focus-visible, .btn:focus-visible {
   margin: 52px 0 18px;
   padding-bottom: 10px;
   background:
-    repeating-linear-gradient(90deg, var(--border) 0 8px, transparent 8px 16px)
-    bottom left / 100% 2px no-repeat;
+    linear-gradient(90deg, var(--phosphor) 0 56px, transparent 56px) bottom left / 100% 2px no-repeat,
+    linear-gradient(var(--frame), var(--frame)) bottom left / 100% 1px no-repeat;
 }
 .cmd .pixel-icon { margin-right: 10px; }
 .cmd[data-branch='data'] .pixel-icon { color: var(--data); }
@@ -315,16 +363,37 @@ a:focus-visible, .btn:focus-visible {
 @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
 .card {
   display: block;
-  background: var(--surface);
-  border: 2px solid var(--border); border-radius: 0;
+  position: relative;
+  background: linear-gradient(180deg, #141a23, var(--surface-2));
+  border: 1px solid var(--border); border-radius: 0;
   padding: 18px;
   color: var(--text);
-  transition: transform 0.12s steps(2), box-shadow 0.12s steps(2), border-color 0.12s steps(2);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
-.card:hover { text-decoration: none; transform: translate(-3px, -3px); }
-.card[data-branch='data']:hover { border-color: var(--data); box-shadow: 6px 6px 0 rgba(121, 192, 255, 0.35); }
-.card[data-branch='mobile']:hover { border-color: var(--mobile); box-shadow: 6px 6px 0 rgba(126, 231, 135, 0.35); }
-.card[data-branch='ai']:hover { border-color: var(--ai); box-shadow: 6px 6px 0 rgba(255, 166, 87, 0.35); }
+.card::before {
+  content: '';
+  position: absolute; inset: -1px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  background-image:
+    linear-gradient(var(--ck), var(--ck)), linear-gradient(var(--ck), var(--ck)),
+    linear-gradient(var(--ck), var(--ck)), linear-gradient(var(--ck), var(--ck)),
+    linear-gradient(var(--ck), var(--ck)), linear-gradient(var(--ck), var(--ck)),
+    linear-gradient(var(--ck), var(--ck)), linear-gradient(var(--ck), var(--ck));
+  background-repeat: no-repeat;
+  background-size: 16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px;
+  background-position: top left, top left, top right, top right,
+    bottom left, bottom left, bottom right, bottom right;
+}
+.card[data-branch='data'] { --ck: var(--data); }
+.card[data-branch='mobile'] { --ck: var(--mobile); }
+.card[data-branch='ai'] { --ck: var(--ai); }
+.card:hover { text-decoration: none; transform: translateY(-2px); }
+.card:hover::before { opacity: 1; }
+.card[data-branch='data']:hover { border-color: rgba(121, 192, 255, 0.5); box-shadow: 0 0 20px -8px var(--data); }
+.card[data-branch='mobile']:hover { border-color: rgba(126, 231, 135, 0.5); box-shadow: 0 0 20px -8px var(--mobile); }
+.card[data-branch='ai']:hover { border-color: rgba(255, 166, 87, 0.5); box-shadow: 0 0 20px -8px var(--ai); }
 .card-title { margin: 0; font-family: var(--crt); font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
 .card[data-branch='data'] .card-title { color: var(--data); }
 .card[data-branch='mobile'] .card-title { color: var(--mobile); }
@@ -366,9 +435,9 @@ a:focus-visible, .btn:focus-visible {
   padding: 1px 6px; font-size: 13px; font-family: var(--mono);
 }
 .prose pre {
-  background: var(--surface) !important;
-  border: 2px solid var(--border); border-radius: 0;
-  box-shadow: 4px 4px 0 var(--shadow);
+  background: var(--surface-2) !important;
+  border: 1px solid var(--frame); border-radius: 0;
+  box-shadow: 0 0 18px -10px rgba(88, 198, 255, 0.5);
   padding: 16px; overflow-x: auto; font-size: 13px;
 }
 .prose pre code { background: none; border: none; padding: 0; }
@@ -382,8 +451,8 @@ a:focus-visible, .btn:focus-visible {
 .footer {
   max-width: 880px; margin: 72px auto 0; padding: 22px 24px 28px;
   background:
-    repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 12px)
-    top left / 100% 3px no-repeat;
+    linear-gradient(90deg, transparent calc(100% - 120px), var(--cyan) calc(100% - 120px), var(--phosphor)) top left / 100% 2px no-repeat,
+    linear-gradient(var(--frame), var(--frame)) top left / 100% 1px no-repeat;
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
   font-size: 13px; color: var(--muted);
 }
@@ -391,7 +460,7 @@ a:focus-visible, .btn:focus-visible {
 
 /* ── motion safety ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .cursor, .terminal::after,
+  .cursor, .terminal::after, body::after,
   .terminal > .prompt, .branch-line,
   .status-dot, .skill-bar i { animation: none; }
   .btn, .card, .nav .lang-switch { transition: none; }
