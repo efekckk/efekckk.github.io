@@ -43,14 +43,18 @@ const analyze: Record<Lang, { info: string; scan: string; alert: string; ok: str
   },
 };
 
-const demo: Record<Lang, { hint: string; count: string }> = {
+const demo: Record<Lang, { hint: string; count: string; scanning: string; warning: string }> = {
   en: {
     hint: 'your pointer movement is a live metric — my MAD-based engine flags the spikes',
     count: 'anomalies caught',
+    scanning: 'scanning… all clear',
+    warning: 'WARNING: anomaly detected',
   },
   tr: {
     hint: 'fare/parmak hareketin canlı bir metrik — MAD tabanlı motorum sapmaları yakalar',
     count: 'yakalanan anomali',
+    scanning: 'tarama sürüyor… temiz',
+    warning: 'UYARI: anomali tespit edildi',
   },
 };
 
@@ -105,9 +109,16 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   </div>
 
   <section class="anomaly-demo" id="live">
-    <h2 class="cmd">$ ./anomaly-engine --live --input=pointer</h2>
+    <p class="eyebrow">$ ./anomaly-engine --live --input=pointer</p>
+    <h2 class="section-title">{t('section.live')}</h2>
     <div class="demo-panel">
-      <canvas id="anomaly-canvas" width="600" height="140"></canvas>
+      <canvas id="anomaly-canvas" width="600" height="160"></canvas>
+      <div
+        class="demo-status"
+        id="anomaly-status"
+        data-scanning={demo[lang].scanning}
+        data-warning={demo[lang].warning}
+      >{demo[lang].scanning}</div>
       <div class="demo-meta">
         <span class="demo-hint">{demo[lang].hint}</span>
         <span class="demo-count">{demo[lang].count}: <b id="anomaly-count">0</b></span>
@@ -119,8 +130,9 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     const list = projects.filter((p) => p.data.branch === key);
     return list.length > 0 && (
       <section id={branches[key].anchor}>
-        <h2 class="cmd" data-branch={key}>
-          <PixelIcon name={key} size={2} />$ ls projects/ --branch={branches[key].name}
+        <p class="eyebrow">$ ls projects/ --branch={branches[key].name}</p>
+        <h2 class="section-title" data-branch={key}>
+          <PixelIcon name={key} size={2} />{branches[key].title[lang]}
         </h2>
         <div class="grid">
           {list.map((p) => <ProjectCard project={p} lang={lang} />)}
@@ -130,7 +142,8 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   })}
 
   <section id="skills">
-    <h2 class="cmd">$ cat skills.txt --bars</h2>
+    <p class="eyebrow">$ cat skills.txt --bars</p>
+    <h2 class="section-title">{t('section.skills')}</h2>
     <div class="skills">
       {skills.map((s) => (
         <div class="skill-row" data-joke={s.joke ? 'true' : undefined}>
@@ -143,7 +156,8 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   </section>
 
   <section id="about">
-    <h2 class="cmd">{t('home.cmd.about')}</h2>
+    <p class="eyebrow">{t('home.cmd.about')}</p>
+    <h2 class="section-title">{t('section.about')}</h2>
     <p style="max-width: 620px; color: var(--muted); font-size: 15px;">
       {t('home.about.text')}
     </p>
@@ -151,7 +165,8 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   </section>
 
   <section id="posts">
-    <h2 class="cmd">{t('home.cmd.blog')}</h2>
+    <p class="eyebrow">{t('home.cmd.blog')}</p>
+    <h2 class="section-title">{t('section.posts')}</h2>
     {posts.map((post) => (
       <a
         class="post-row"
@@ -211,9 +226,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
 
   if (canvas && countEl) {
     const ctx = canvas.getContext('2d')!;
-    const GREEN = { hi: '#aff5b4', mid: '#39d353', lo: '#1a7f37', rim: '#56d364' };
-    const ORANGE = { hi: '#ffd8b5', mid: '#ffa657', lo: '#9a5518', rim: '#ffc680' };
-    type Palette = typeof GREEN;
+    const ORANGE = { mid: '#ffa657' };
 
     const SPRITES = {
       invader: ['..#..#..', '...##...', '..####..', '.##..##.', '########', '#.####.#', '#.#..#.#', '.#....#.'],
@@ -270,7 +283,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     const THRESHOLD = 3.5;
     const MAD_FLOOR = 2;
     const REFRACTORY = 12;
-    const samples: { v: number; anomaly: boolean }[] = [];
+    const samples: { v: number; z: number; anomaly: boolean }[] = [];
     let speed = 0;
     let lastX: number | null = null;
     let lastY: number | null = null;
@@ -293,6 +306,8 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
       return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
     };
 
+    const statusEl = document.getElementById('anomaly-status');
+
     const tick = () => {
       // log-compress pointer speed so steady motion is a band, only jerks spike
       let v = Math.log1p(speed) * 11 + Math.random() * 4;
@@ -300,75 +315,111 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
       speed = 0;
 
       let anomaly = false;
+      let z = 0;
       const recent = samples.slice(-WINDOW).map((s) => s.v);
       if (recent.length >= 10) {
         const med = median(recent);
         const mad = Math.max(median(recent.map((x) => Math.abs(x - med))), MAD_FLOOR);
-        const z = (0.6745 * (v - med)) / mad;
+        z = (0.6745 * (v - med)) / mad;
         anomaly = Math.abs(z) > THRESHOLD && cooldown === 0;
       }
       if (anomaly) {
         cooldown = REFRACTORY;
         countEl.textContent = String(++anomalies);
+        if (statusEl) {
+          statusEl.textContent = `▲ ${statusEl.dataset.warning} (z = ${z.toFixed(1)})`;
+          statusEl.classList.add('alert');
+        }
       } else if (cooldown > 0) {
         cooldown--;
+        if (cooldown === 0 && statusEl) {
+          statusEl.textContent = statusEl.dataset.scanning ?? '';
+          statusEl.classList.remove('alert');
+        }
       }
-      samples.push({ v, anomaly });
+      samples.push({ v, z, anomaly });
       if (samples.length > 60) samples.shift();
       tickCount++;
       draw();
     };
 
-    const drawColumn = (x: number, top: number, h: number, bw: number, pal: Palette) => {
-      ctx.fillStyle = pal.mid;
-      ctx.fillRect(x, top, bw, h);
-      ctx.fillStyle = pal.hi;
-      ctx.fillRect(x, top, 2, h);
-      ctx.fillStyle = pal.lo;
-      ctx.fillRect(x + bw - 2, top, 2, h);
-      ctx.fillStyle = pal.rim;
-      ctx.fillRect(x - 2, top, bw + 4, 4);
-      ctx.fillStyle = pal.hi;
-      ctx.fillRect(x - 2, top, bw + 4, 2);
-    };
-
     const draw = () => {
       const W = canvas.width;
       const H = canvas.height;
-      const block = 4;
-      const bw = 8;
-      const gap = 6;
+      const padY = 16;
+      const left = 38;
+      const right = W - 12;
+      const zMin = -5;
+      const zMax = 6.5;
+      const yOf = (zv: number) => {
+        const c = Math.max(zMin, Math.min(zMax, zv));
+        return padY + ((zMax - c) / (zMax - zMin)) * (H - 2 * padY);
+      };
       ctx.clearRect(0, 0, W, H);
 
       stars.forEach((st, i) => {
         if (st.blink && (tickCount + i) % 9 < 3) return;
-        ctx.fillStyle = '#2d333b';
-        ctx.fillRect(st.x, st.y, 2, 2);
+        ctx.fillStyle = 'rgba(230, 237, 243, 0.09)';
+        ctx.fillRect(st.x, (st.y * 1.6) % H, 2, 2);
       });
 
-      for (let gx = 0; gx < W; gx += block) {
-        ctx.fillStyle = (gx / block) % 2 ? '#161b22' : '#21262d';
-        ctx.fillRect(gx, H - 6, block, 6);
+      ctx.font = "10px 'IBM Plex Mono', monospace";
+      const gridlines: [string, number, string][] = [
+        ['+3.5', 3.5, 'rgba(255, 166, 87, 0.35)'],
+        ['0', 0, 'rgba(230, 237, 243, 0.12)'],
+        ['-3.5', -3.5, 'rgba(255, 166, 87, 0.35)'],
+      ];
+      gridlines.forEach(([label, zv, color]) => {
+        const y = yOf(zv);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.setLineDash(zv === 0 ? [] : [5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(139, 148, 158, 0.8)';
+        ctx.fillText(label, 6, y + 3);
+      });
+
+      const step = (right - left) / 59;
+      const pts = samples.map((s, i) => ({
+        x: right - (samples.length - 1 - i) * step,
+        y: yOf(s.z),
+        a: s.anomaly,
+      }));
+      if (pts.length < 2) return;
+
+      ctx.strokeStyle = '#39d353';
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.shadowColor = 'rgba(57, 211, 83, 0.55)';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      pts.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      pts.forEach((p) => {
+        if (!p.a) return;
+        ctx.fillStyle = '#ff6b50';
+        ctx.shadowColor = 'rgba(255, 107, 80, 0.9)';
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        drawSprite(SPRITES.invader, p.x - 8, Math.max(2, p.y - 30), 2, { '#': ORANGE.mid });
+      });
+
+      const last = pts[pts.length - 1];
+      if (last && !last.a) {
+        const bounce = tickCount % 4 < 2 ? 0 : 2;
+        const blinkOff = tickCount % 6 < 2 ? 'a' : undefined;
+        drawSprite(SPRITES.bot, last.x - 16, last.y - 20 - bounce, 2, BOT_PAL, blinkOff);
       }
-
-      const max = Math.max(40, ...samples.map((s) => s.v));
-      const visible = Math.floor((W - 16) / (bw + gap));
-      const shown = samples.slice(-visible);
-      shown.forEach((s, i) => {
-        const h = Math.max(block, Math.round(((s.v / max) * (H - 44)) / block) * block);
-        const x = W - (shown.length - i) * (bw + gap) - 8;
-        const top = H - 6 - h;
-        const pal = s.anomaly ? ORANGE : GREEN;
-        drawColumn(x, top, h, bw, pal);
-        if (s.anomaly) {
-          drawSprite(SPRITES.invader, x - 4, top - 22, 2, { '#': ORANGE.mid });
-        }
-        if (i === shown.length - 1 && !s.anomaly) {
-          const bounce = tickCount % 4 < 2 ? 0 : 2;
-          const blinkOff = tickCount % 6 < 2 ? 'a' : undefined;
-          drawSprite(SPRITES.bot, x - 6, top - 20 - bounce, 2, BOT_PAL, blinkOff);
-        }
-      });
     };
 
     setInterval(tick, 140);

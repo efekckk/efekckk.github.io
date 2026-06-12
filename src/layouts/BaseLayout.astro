@@ -34,6 +34,32 @@ const ogImage = new URL('/og.png', Astro.site);
     <title>{title}</title>
   </head>
   <body>
+    <svg class="bg-net" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#222b36" stroke-width="1">
+        <line x1="120" y1="140" x2="300" y2="90" /><line x1="300" y1="90" x2="430" y2="210" />
+        <line x1="120" y1="140" x2="220" y2="320" /><line x1="430" y1="210" x2="220" y2="320" />
+        <line x1="1180" y1="120" x2="1330" y2="240" /><line x1="1330" y1="240" x2="1240" y2="400" />
+        <line x1="1180" y1="120" x2="1060" y2="260" /><line x1="1060" y1="260" x2="1240" y2="400" />
+        <line x1="180" y1="700" x2="340" y2="800" /><line x1="340" y1="800" x2="480" y2="710" />
+        <line x1="1150" y1="720" x2="1300" y2="650" /><line x1="1300" y1="650" x2="1380" y2="800" />
+      </g>
+      <g>
+        <circle cx="120" cy="140" r="2.5" fill="#39d353" opacity="0.7" />
+        <circle cx="300" cy="90" r="2" fill="#58c6ff" opacity="0.6" />
+        <circle cx="430" cy="210" r="2.5" fill="#58c6ff" opacity="0.5" />
+        <circle cx="220" cy="320" r="2" fill="#ffa657" opacity="0.55" />
+        <circle cx="1180" cy="120" r="2.5" fill="#58c6ff" opacity="0.6" />
+        <circle cx="1330" cy="240" r="2" fill="#39d353" opacity="0.6" />
+        <circle cx="1240" cy="400" r="2.5" fill="#ffa657" opacity="0.5" />
+        <circle cx="1060" cy="260" r="2" fill="#39d353" opacity="0.5" />
+        <circle cx="180" cy="700" r="2" fill="#58c6ff" opacity="0.5" />
+        <circle cx="340" cy="800" r="2.5" fill="#39d353" opacity="0.55" />
+        <circle cx="480" cy="710" r="2" fill="#ffa657" opacity="0.45" />
+        <circle cx="1150" cy="720" r="2" fill="#39d353" opacity="0.5" />
+        <circle cx="1300" cy="650" r="2.5" fill="#58c6ff" opacity="0.55" />
+        <circle cx="1380" cy="800" r="2" fill="#ffa657" opacity="0.5" />
+      </g>
+    </svg>
     <Nav lang={lang} altPath={altPath} />
     <main class="container">
       <slot />
