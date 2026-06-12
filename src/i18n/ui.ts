@@ -41,6 +41,10 @@ export const ui = {
     'rail.skills': 'SKILLS',
     'rail.about': 'ABOUT',
     'rail.posts': 'POSTS',
+    'rail.stat.branches': 'branches',
+    'rail.stat.projects': 'projects',
+    'rail.stat.posts': 'posts',
+    'card.oss': 'OPEN SOURCE',
   },
   tr: {
     'nav.projects': 'Projeler',
@@ -80,6 +84,10 @@ export const ui = {
     'rail.skills': 'YETENEKLER',
     'rail.about': 'HAKKIMDA',
     'rail.posts': 'YAZILAR',
+    'rail.stat.branches': 'branch',
+    'rail.stat.projects': 'proje',
+    'rail.stat.posts': 'yazı',
+    'card.oss': 'AÇIK KAYNAK',
   },
 } as const;
 

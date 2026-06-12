@@ -24,17 +24,17 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--bg); color: var(--text); font-family: var(--sans); }
-
-body {
-  margin: 0;
-  line-height: 1.6;
+html {
+  color: var(--text);
+  font-family: var(--sans);
   background:
     radial-gradient(1100px 560px at 78% -12%, rgba(88, 198, 255, 0.08), transparent 62%),
     radial-gradient(900px 520px at -12% 32%, rgba(57, 211, 83, 0.055), transparent 58%),
     radial-gradient(circle at center, rgba(230, 237, 243, 0.05) 1px, transparent 1px) 0 0 / 28px 28px,
     var(--bg);
 }
+
+body { margin: 0; line-height: 1.6; }
 
 body::after {
   content: '';

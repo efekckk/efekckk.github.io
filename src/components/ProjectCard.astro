@@ -1,10 +1,11 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { entrySlug, localizePath } from '../i18n/utils';
+import { entrySlug, localizePath, useTranslations } from '../i18n/utils';
 import type { Lang } from '../i18n/ui';
 
 interface Props { project: CollectionEntry<'projects'>; lang: Lang; }
 const { project, lang } = Astro.props;
+const t = useTranslations(lang);
 const { title, summary, stack, branch, repo, image } = project.data;
 const href = localizePath(lang, `/projects/${entrySlug(project.id)}`);
 ---
@@ -12,7 +13,7 @@ const href = localizePath(lang, `/projects/${entrySlug(project.id)}`);
   {image && <img class="card-thumb" src={image} alt={title} loading="lazy" />}
   <h3 class="card-title">
     {title}
-    {repo && <span class="card-oss">OPEN SOURCE</span>}
+    {repo && <span class="card-oss">{t('card.oss')}</span>}
   </h3>
   <p class="card-summary">{summary}</p>
   <div class="card-stack mono">{stack.join(' · ')}</div>

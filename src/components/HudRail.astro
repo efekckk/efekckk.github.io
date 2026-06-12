@@ -28,9 +28,9 @@ const anchors = [
   </div>
   <p class="status-badge"><span class="status-dot"></span>{status}</p>
   <div class="rail-stats mono">
-    <span>branches: 3</span>
-    <span>projects: {projectCount}</span>
-    <span>posts: {postCount}</span>
+    <span>{t('rail.stat.branches')}: 3</span>
+    <span>{t('rail.stat.projects')}: {projectCount}</span>
+    <span>{t('rail.stat.posts')}: {postCount}</span>
   </div>
   <nav class="rail-anchors" aria-label="sections">
     {anchors.map((a) => (
