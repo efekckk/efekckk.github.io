@@ -30,8 +30,8 @@ body {
   margin: 0;
   line-height: 1.6;
   background:
-    radial-gradient(900px 480px at 75% -10%, rgba(88, 198, 255, 0.06), transparent 60%),
-    radial-gradient(700px 420px at -10% 30%, rgba(57, 211, 83, 0.045), transparent 55%),
+    radial-gradient(1100px 560px at 78% -12%, rgba(88, 198, 255, 0.08), transparent 62%),
+    radial-gradient(900px 520px at -12% 32%, rgba(57, 211, 83, 0.055), transparent 58%),
     radial-gradient(circle at center, rgba(230, 237, 243, 0.05) 1px, transparent 1px) 0 0 / 28px 28px,
     var(--bg);
 }
@@ -82,7 +82,7 @@ a:focus-visible, .btn:focus-visible {
   border: 0;
 }
 
-.container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.container { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
 
 /* ── pixel icon (box-shadow art) ─────────────────────────── */
 .pixel-icon { display: inline-block; position: relative; vertical-align: -2px; }
@@ -92,7 +92,7 @@ a:focus-visible, .btn:focus-visible {
 .nav {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   flex-wrap: wrap;
-  max-width: 880px; margin: 0 auto; padding: 20px 24px 16px;
+  max-width: 1060px; margin: 0 auto; padding: 20px 24px 16px;
   background:
     linear-gradient(90deg, var(--phosphor), var(--cyan) 120px, transparent 120px) bottom left / 100% 2px no-repeat,
     linear-gradient(var(--frame), var(--frame)) bottom left / 100% 1px no-repeat;
@@ -226,17 +226,25 @@ a:focus-visible, .btn:focus-visible {
 }
 .hero-name {
   font-family: var(--px);
-  font-size: clamp(17px, 4.2vw, 30px);
+  font-size: clamp(22px, 4.8vw, 44px);
   line-height: 1.5;
   margin: 0;
   letter-spacing: 1px;
   text-shadow:
-    2px 2px 0 rgba(88, 198, 255, 0.3),
-    0 0 22px rgba(88, 198, 255, 0.25);
+    3px 3px 0 rgba(88, 198, 255, 0.18),
+    0 0 32px rgba(88, 198, 255, 0.22);
+}
+.hero-name .grad {
+  background: linear-gradient(100deg, var(--phosphor) 10%, var(--cyan) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 18px rgba(57, 211, 83, 0.35));
 }
 .hero-tag {
-  font-family: var(--crt); font-size: 21px; color: var(--muted);
-  margin: 10px 0 0;
+  font-family: var(--crt); font-size: 24px; color: var(--muted);
+  margin: 14px 0 0;
 }
 .hero-tag::before { content: '▸ '; color: var(--phosphor); }
 
@@ -260,11 +268,15 @@ a:focus-visible, .btn:focus-visible {
   content: 'EFECAN.EXE ── tty1 ▮ SYS:ONLINE';
   position: absolute; top: 0; left: 0; right: 0;
   height: 26px;
-  background: linear-gradient(90deg, #161d27, #10151c);
+  background:
+    linear-gradient(#ff5f56, #ff5f56) 12px 50% / 6px 6px no-repeat,
+    linear-gradient(#ffbd2e, #ffbd2e) 24px 50% / 6px 6px no-repeat,
+    linear-gradient(#27c93f, #27c93f) 36px 50% / 6px 6px no-repeat,
+    linear-gradient(90deg, #161d27, #10151c);
   border-bottom: 1px solid var(--frame);
   box-shadow: 0 1px 0 rgba(88, 198, 255, 0.15);
   font-family: var(--px); font-size: 8px; color: var(--faint);
-  display: flex; align-items: center; padding: 0 12px;
+  display: flex; align-items: center; padding: 0 12px 0 52px;
   letter-spacing: 1px;
 }
 .terminal::after {
@@ -421,7 +433,7 @@ a:focus-visible, .btn:focus-visible {
   font-family: var(--crt); font-size: 23px; font-weight: 400;
   color: var(--prompt);
   text-shadow: 0 0 7px rgba(126, 231, 135, 0.25);
-  margin: 52px 0 18px;
+  margin: 76px 0 22px;
   padding-bottom: 10px;
   background:
     linear-gradient(90deg, var(--phosphor) 0 56px, transparent 56px) bottom left / 100% 2px no-repeat,
@@ -563,7 +575,7 @@ a:focus-visible, .btn:focus-visible {
 
 /* ── footer ──────────────────────────────────────────────── */
 .footer {
-  max-width: 880px; margin: 72px auto 0; padding: 22px 24px 28px;
+  max-width: 1060px; margin: 88px auto 0; padding: 22px 24px 28px;
   background:
     linear-gradient(90deg, transparent calc(100% - 120px), var(--cyan) calc(100% - 120px), var(--phosphor)) top left / 100% 2px no-repeat,
     linear-gradient(var(--frame), var(--frame)) top left / 100% 1px no-repeat;

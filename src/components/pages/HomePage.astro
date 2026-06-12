@@ -74,7 +74,7 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
   <div class="console-main">
   <header class="hero-head">
     <div>
-      <h1 class="hero-name">EFECAN KÜÇÜK</h1>
+      <h1 class="hero-name">EFECAN <span class="grad">KÜÇÜK</span></h1>
       <p class="hero-tag">{t('hero.tag')}</p>
     </div>
   </header>
@@ -268,11 +268,14 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     let tickCount = 0;
     const WINDOW = 40;
     const THRESHOLD = 3.5;
+    const MAD_FLOOR = 2;
+    const REFRACTORY = 12;
     const samples: { v: number; anomaly: boolean }[] = [];
     let speed = 0;
     let lastX: number | null = null;
     let lastY: number | null = null;
     let anomalies = 0;
+    let cooldown = 0;
 
     const onMove = (x: number, y: number) => {
       if (lastX !== null && lastY !== null) {
@@ -291,22 +294,25 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
     };
 
     const tick = () => {
-      // idle noise keeps the chart alive; pointer speed rides on top
-      let v = speed + Math.random() * 6;
-      if (reduced === false && Math.random() < 0.015) v += 80 + Math.random() * 60; // rare cosmic ray
+      // log-compress pointer speed so steady motion is a band, only jerks spike
+      let v = Math.log1p(speed) * 11 + Math.random() * 4;
+      if (reduced === false && Math.random() < 0.008) v += 60 + Math.random() * 40;
       speed = 0;
 
       let anomaly = false;
       const recent = samples.slice(-WINDOW).map((s) => s.v);
       if (recent.length >= 10) {
         const med = median(recent);
-        const mad = median(recent.map((x) => Math.abs(x - med)));
-        if (mad > 0) {
-          const z = (0.6745 * (v - med)) / mad;
-          anomaly = Math.abs(z) > THRESHOLD;
-        }
+        const mad = Math.max(median(recent.map((x) => Math.abs(x - med))), MAD_FLOOR);
+        const z = (0.6745 * (v - med)) / mad;
+        anomaly = Math.abs(z) > THRESHOLD && cooldown === 0;
       }
-      if (anomaly) countEl.textContent = String(++anomalies);
+      if (anomaly) {
+        cooldown = REFRACTORY;
+        countEl.textContent = String(++anomalies);
+      } else if (cooldown > 0) {
+        cooldown--;
+      }
       samples.push({ v, anomaly });
       if (samples.length > 60) samples.shift();
       tickCount++;
