@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../ProjectCard.astro';
+import PixelIcon from '../PixelIcon.astro';
 import { branches, branchKeys } from '../../data/branches';
 import { useTranslations, localizePath, otherLang } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
@@ -24,7 +25,9 @@ const projects = (await getCollection('projects', (e) => e.id.startsWith(`${lang
     const list = projects.filter((p) => p.data.branch === key);
     return list.length > 0 && (
       <section>
-        <h2 class="cmd">--branch={branches[key].name}</h2>
+        <h2 class="cmd" data-branch={key}>
+          <PixelIcon name={key} size={2} />--branch={branches[key].name}
+        </h2>
         <div class="grid">
           {list.map((p) => <ProjectCard project={p} lang={lang} />)}
         </div>

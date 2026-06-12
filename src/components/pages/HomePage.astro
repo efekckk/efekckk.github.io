@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../ProjectCard.astro';
+import PixelIcon from '../PixelIcon.astro';
 import { branches, branchKeys } from '../../data/branches';
 import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
@@ -27,12 +28,16 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
   description={t('meta.home.desc')}
   altPath={localizePath(otherLang(lang), '/')}
 >
-  <h1 class="sr-only">{t('meta.home.title')}</h1>
-  <section class="terminal mono">
+  <header class="hero-head">
+    <h1 class="hero-name">EFECAN KÜÇÜK</h1>
+    <p class="hero-tag">{t('hero.tag')}</p>
+  </header>
+  <section class="terminal">
     <div class="prompt">efecan@istanbul ~ $ git branch -a</div>
     {branchKeys.map((key) => (
       <a class="branch-line" data-branch={key} href={`#${branches[key].anchor}`}>
         <span class="star">{key === 'data' ? '*' : ' '}</span>
+        <PixelIcon name={key} size={2} />
         <span class="branch-name">{branches[key].name}</span>
         <span class="branch-comment">{branches[key].comment[lang]}</span>
       </a>
@@ -53,7 +58,9 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
     const list = projects.filter((p) => p.data.branch === key);
     return list.length > 0 && (
       <section id={branches[key].anchor}>
-        <h2 class="cmd">$ ls projects/ --branch={branches[key].name}</h2>
+        <h2 class="cmd" data-branch={key}>
+          <PixelIcon name={key} size={2} />$ ls projects/ --branch={branches[key].name}
+        </h2>
         <div class="grid">
           {list.map((p) => <ProjectCard project={p} lang={lang} />)}
         </div>

@@ -30,6 +30,7 @@ export const ui = {
     'footer.cmd': '$ contact --email --linkedin --github',
     'hero.checkout': 'git checkout',
     'hero.pick': 'pick a branch above',
+    'hero.tag': '3 branches · 0 merge conflicts',
   },
   tr: {
     'nav.projects': 'Projeler',
@@ -58,6 +59,7 @@ export const ui = {
     'footer.cmd': '$ iletisim --eposta --linkedin --github',
     'hero.checkout': 'git checkout',
     'hero.pick': 'yukarıdan bir branch seç',
+    'hero.tag': '3 branch · 0 merge conflict',
   },
 } as const;
 
