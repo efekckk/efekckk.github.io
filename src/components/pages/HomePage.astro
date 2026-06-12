@@ -217,14 +217,41 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
 
     const SPRITES = {
       invader: ['..#..#..', '...##...', '..####..', '.##..##.', '########', '#.####.#', '#.#..#.#', '.#....#.'],
-      blob: ['..####..', '.######.', '#o####o#', '########', '.######.', '..#..#..'],
+      bot: [
+        '....a.....',
+        '.ffffffff.',
+        '.feeeeeef.',
+        '.fegeegef.',
+        '.feggggef.',
+        '.ffffffff.',
+        '...tttt...',
+        '..ttcctt..',
+        '..t....t..',
+      ],
     };
 
-    const drawSprite = (map: string[], x: number, y: number, s: number, color: string, eye: string) => {
+    const BOT_PAL: Record<string, string> = {
+      a: '#ffa657',
+      f: '#38414d',
+      e: '#0b1016',
+      g: '#39d353',
+      t: '#2ea043',
+      c: '#58c6ff',
+    };
+
+    const drawSprite = (
+      map: string[],
+      x: number,
+      y: number,
+      s: number,
+      palette: Record<string, string>,
+      skip?: string
+    ) => {
       map.forEach((row, ry) => {
         [...row].forEach((c, rx) => {
-          if (c === '.') return;
-          ctx.fillStyle = c === 'o' ? eye : color;
+          const color = palette[c];
+          if (!color || c === skip) return;
+          ctx.fillStyle = color;
           ctx.fillRect(x + rx * s, y + ry * s, s, s);
         });
       });
@@ -328,11 +355,12 @@ const skills: { label: Record<Lang, string>; v: number; joke?: boolean }[] = [
         const pal = s.anomaly ? ORANGE : GREEN;
         drawColumn(x, top, h, bw, pal);
         if (s.anomaly) {
-          drawSprite(SPRITES.invader, x - 4, top - 22, 2, ORANGE.mid, '#0a0d12');
+          drawSprite(SPRITES.invader, x - 4, top - 22, 2, { '#': ORANGE.mid });
         }
         if (i === shown.length - 1 && !s.anomaly) {
           const bounce = tickCount % 4 < 2 ? 0 : 2;
-          drawSprite(SPRITES.blob, x - 4, top - 14 - bounce, 2, GREEN.mid, '#0a0d12');
+          const blinkOff = tickCount % 6 < 2 ? 'a' : undefined;
+          drawSprite(SPRITES.bot, x - 6, top - 20 - bounce, 2, BOT_PAL, blinkOff);
         }
       });
     };

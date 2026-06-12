@@ -147,6 +147,13 @@ a:focus-visible, .btn:focus-visible {
 .rail-id { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .pixel-avatar { display: inline-block; position: relative; }
 .pixel-avatar i { display: block; }
+.pixel-avatar .antenna {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: blink 1.3s step-end infinite;
+  filter: drop-shadow(0 0 4px var(--ai));
+}
 .rail-user { font-size: 13px; color: var(--prompt); }
 .hud-rail .status-badge { align-self: center; }
 .rail-stats {
@@ -569,6 +576,6 @@ a:focus-visible, .btn:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .cursor, .terminal::after, body::after,
   .terminal > .prompt, .branch-line,
-  .status-dot, .skill-bar i { animation: none; }
+  .status-dot, .skill-bar i, .pixel-avatar .antenna { animation: none; }
   .btn, .card, .nav .lang-switch { transition: none; }
 }

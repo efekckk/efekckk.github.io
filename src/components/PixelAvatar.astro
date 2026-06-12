@@ -35,10 +35,13 @@ const MAP = [
 ];
 
 const shadows: string[] = [];
+const antennaShadows: string[] = [];
 MAP.forEach((row, y) => {
   [...row].forEach((cell, x) => {
     const color = PALETTE[cell];
-    if (color) shadows.push(`${x * size}px ${y * size}px 0 0 ${color}`);
+    if (!color) return;
+    const px = `${x * size}px ${y * size}px 0 0 ${color}`;
+    (cell === 'a' ? antennaShadows : shadows).push(px);
   });
 });
 const width = size * MAP[0].length;
@@ -46,4 +49,5 @@ const height = size * MAP.length;
 ---
 <span class="pixel-avatar" aria-hidden="true" style={`width:${width}px;height:${height}px;`}>
   <i style={`width:${size}px;height:${size}px;box-shadow:${shadows.join(',')};`}></i>
+  <i class="antenna" style={`width:${size}px;height:${size}px;box-shadow:${antennaShadows.join(',')};`}></i>
 </span>
