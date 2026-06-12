@@ -23,6 +23,12 @@ const slug = entrySlug(project.id);
     </p>
     <h1>{project.data.title}</h1>
     <div class="stack mono">{project.data.stack.join(' · ')}</div>
+    {(project.data.repo || project.data.pkg) && (
+      <p class="detail-links mono">
+        {project.data.repo && <a href={project.data.repo}>github ↗</a>}
+        {project.data.pkg && <a href={project.data.pkg}>pypi ↗</a>}
+      </p>
+    )}
     <div class="prose">
       <Content />
     </div>

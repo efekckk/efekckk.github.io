@@ -5,11 +5,14 @@ import type { Lang } from '../i18n/ui';
 
 interface Props { project: CollectionEntry<'projects'>; lang: Lang; }
 const { project, lang } = Astro.props;
-const { title, summary, stack, branch } = project.data;
+const { title, summary, stack, branch, repo } = project.data;
 const href = localizePath(lang, `/projects/${entrySlug(project.id)}`);
 ---
 <a class="card" data-branch={branch} href={href}>
-  <h3 class="card-title">{title}</h3>
+  <h3 class="card-title">
+    {title}
+    {repo && <span class="card-oss">OPEN SOURCE</span>}
+  </h3>
   <p class="card-summary">{summary}</p>
   <div class="card-stack mono">{stack.join(' · ')}</div>
 </a>

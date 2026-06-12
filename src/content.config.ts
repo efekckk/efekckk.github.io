@@ -12,6 +12,8 @@ const projects = defineCollection({
     stack: z.array(z.string()),
     date: z.date(),
     order: z.number(),
+    repo: z.string().url().optional(),
+    pkg: z.string().url().optional(),
   }),
 });
 
