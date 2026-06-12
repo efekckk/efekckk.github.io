@@ -1,0 +1,38 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, otherLang, entrySlug } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang; post: CollectionEntry<'blog'>; }
+const { lang, post } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(post);
+const slug = entrySlug(post.id);
+
+const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+<BaseLayout
+  lang={lang}
+  title={`${post.data.title} — Efecan Küçük`}
+  description={post.data.description}
+  altPath={localizePath(otherLang(lang), `/blog/${slug}`)}
+>
+  <article class="detail" data-branch={post.data.branch}>
+    <p style="margin-top: 32px;">
+      <a class="mono" href={localizePath(lang, '/blog')}>{t('detail.back')}</a>
+    </p>
+    <h1>{post.data.title}</h1>
+    <div class="stack mono">
+      [{post.data.branch}] · {dateFmt.format(post.data.date)}
+    </div>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
