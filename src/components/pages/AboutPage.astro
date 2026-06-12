@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, otherLang } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const log: { hash: string; year: string; text: Record<Lang, string> }[] = [
+  {
+    hash: 'a3f9c21',
+    year: '2019',
+    text: {
+      en: 'init — Mechatronics Engineering @ Piri Reis University. Math, programming fundamentals, system dynamics.',
+      tr: 'init — Piri Reis Üniversitesi, Mekatronik Mühendisliği. Matematik, programlama temelleri, sistem dinamiği.',
+    },
+  },
+  {
+    hash: 'b7e2d54',
+    year: '2024',
+    text: {
+      en: 'feat(edu): Web Design & Coding @ Istanbul University — associate degree, 2024–2026.',
+      tr: 'feat(edu): İstanbul Üniversitesi, Web Tasarım ve Kodlama — önlisans, 2024–2026.',
+    },
+  },
+  {
+    hash: 'c1a8f03',
+    year: '2024',
+    text: {
+      en: 'feat: joined Foneria as Data Analyst Intern. Cleaned multi-source data, automated daily reports with SQL.',
+      tr: `feat: Foneria’ya Data Analyst Intern olarak katıldım. Çok kaynaklı veriyi temizledim, günlük raporları SQL ile otomatikleştirdim.`,
+    },
+  },
+  {
+    hash: 'd9c4b72',
+    year: '2025',
+    text: {
+      en: 'feat!: promoted to Data Analyst. SQL/Python analyses, Power BI & Looker dashboards, CLTV/RFM segmentation, KAP data pipelines.',
+      tr: `feat!: Data Analyst’e terfi. SQL/Python analizleri, Power BI & Looker dashboard’ları, CLTV/RFM segmentasyonu, KAP veri pipeline’ları.`,
+    },
+  },
+  {
+    hash: 'e5d1a98',
+    year: '2025',
+    text: {
+      en: 'branch data-analytics: real-time anomaly detection engine; Airflow ETL with an 80% performance gain.',
+      tr: 'branch data-analytics: gerçek zamanlı anomali tespit motoru; %80 performans kazançlı Airflow ETL.',
+    },
+  },
+  {
+    hash: 'f2b6c40',
+    year: '2026',
+    text: {
+      en: `branch mobile-development: Foneria’s investment app in production on iOS (SwiftUI) and Android (Jetpack Compose).`,
+      tr: `branch mobile-development: Foneria’nın yatırım uygulaması iOS (SwiftUI) ve Android (Jetpack Compose) üzerinde üretimde.`,
+    },
+  },
+  {
+    hash: '0a7e3d5',
+    year: '2026',
+    text: {
+      en: `branch ai-engineering: fund discovery API, RAG & MCP frameworks, n8n + Qdrant pipelines, multi-agent architecture in design.`,
+      tr: `branch ai-engineering: fon keşif API’si, RAG & MCP framework’leri, n8n + Qdrant pipeline’ları, tasarımda multi-agent mimari.`,
+    },
+  },
+];
+
+const certs = [
+  'Python for Data Science and Machine Learning — Certificate Program',
+  'Associate Data Scientist in Python — Datacamp',
+  'Intermediate SQL — Datacamp',
+];
+
+const intro: Record<Lang, string> = {
+  en: 'The short version: I never picked one lane. The long version is below, in chronological order, the way git intended.',
+  tr: `Kısa versiyon: hiçbir zaman tek şerit seçmedim. Uzun versiyon aşağıda, kronolojik sırayla — git’in emrettiği gibi.`,
+};
+---
+<BaseLayout
+  lang={lang}
+  title={t('meta.about.title')}
+  description={t('meta.about.desc')}
+  altPath={localizePath(otherLang(lang), '/about')}
+>
+  <h1 class="cmd" style="margin-top: 40px;">$ git log --reverse career</h1>
+  <p style="max-width: 620px; color: var(--muted); font-size: 15px;">{intro[lang]}</p>
+
+  <section>
+    {log.map((entry) => (
+      <div class="log-row">
+        <span class="log-hash">{entry.hash}</span>
+        <span class="log-year">{entry.year}</span>
+        <span>{entry.text[lang]}</span>
+      </div>
+    ))}
+  </section>
+
+  <section>
+    <h2 class="cmd">$ ls certificates/</h2>
+    <ul style="color: var(--muted); font-size: 14px;">
+      {certs.map((c) => <li>{c}</li>)}
+    </ul>
+  </section>
+
+  <section style="margin-top: 32px;">
+    <a class="btn btn-primary" href="/cv.pdf" download>{t('btn.cv')}</a>
+  </section>
+</BaseLayout>
