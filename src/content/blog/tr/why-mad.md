@@ -24,3 +24,6 @@ modified_z = 0.6745 * (x - median) / mad
 Üretimdeki izleme sistemimizde bu değişiklik — artı haftanın gününe göre baseline'lar —
 false positive'leri %60 azalttı. Nöbet telefonu sessizleşti. Eski matematiği özleyen
 olmadı.
+
+**Güncelleme:** bu matematik artık bir paket. `pip install madwatch` — kaynak kodu
+[GitHub'da](https://github.com/efekckk/madwatch). Tasarımı gereği balina geçirmez.

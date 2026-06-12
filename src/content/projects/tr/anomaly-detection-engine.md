@@ -24,3 +24,9 @@ yerini aldığı naif yaklaşıma göre **%60 daha az false positive**.
 Bir alarm gerçekten öttüğünde, GPT-4 (OpenRouter üzerinden) alarmı ve metrikler arası
 bağlamı alır — net akış vs. çıkış, funnel dönüşüm oranları — ve insan diliyle bir kök
 neden analizi yazar. Nöbetçi insan sayı duvarı değil, bir paragraf okur.
+
+## Açık kaynak
+
+Bu motorun istatistiksel çekirdeği artık PyPI'da:
+[madwatch](https://github.com/efekckk/madwatch) — `pip install madwatch` ile aynı MAD
+tabanlı Modified Z-Score, akış tespiti ve haftanın gününe göre baseline'lar elinde.

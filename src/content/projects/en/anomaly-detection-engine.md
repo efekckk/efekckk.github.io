@@ -24,3 +24,9 @@ than the naive approach it replaced.
 When something *does* fire, GPT-4 (via OpenRouter) gets the alert plus cross-metric
 context — net flow vs. cash out, funnel conversion ratios — and writes a human-readable
 root cause analysis. The on-call human reads a paragraph, not a wall of numbers.
+
+## Open source
+
+The statistical core of this engine now lives on PyPI as
+[madwatch](https://github.com/efekckk/madwatch): `pip install madwatch` gets you the
+same MAD-based Modified Z-Score, streaming detection and day-of-week baselines.

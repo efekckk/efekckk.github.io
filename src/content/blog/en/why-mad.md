@@ -23,3 +23,6 @@ The `0.6745` constant makes MAD comparable to σ for normal distributions, so th
 
 In our production monitoring this swap — plus day-of-week baselines — cut false
 positives by 60%. The on-call phone got quieter. Nobody missed the old math.
+
+**Update:** this math is now a package. `pip install madwatch` — source on
+[GitHub](https://github.com/efekckk/madwatch). Whale-proof by design.
