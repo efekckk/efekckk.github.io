@@ -1,5 +1,5 @@
 ---
-title: foneria-mobile
+title: Foneria
 summary: A production fintech investment app, twice — SwiftUI on iOS, Jetpack Compose on Android. Real money, real users, real code review.
 branch: mobile
 stack: [Swift, SwiftUI, Kotlin, Jetpack Compose, Hilt, Firebase]
